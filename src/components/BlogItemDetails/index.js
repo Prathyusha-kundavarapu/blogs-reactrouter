@@ -2,17 +2,35 @@ import {Component} from 'react'
 
 import './index.css'
 
-const blogData = {
-  title: 'Blog Name',
-  imageUrl: 'https://assets.ccbp.in/frontend/react-js/placeholder-3-img.png',
-  avatarUrl: 'https://assets.ccbp.in/frontend/react-js/avatar-img.png',
-  author: 'Author Name',
-  content:
-    'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-}
-
 class BlogItemDetails extends Component {
+  state = {blogData: {}}
+
+  componentDidMount() {
+    this.getBlogsData()
+  }
+
+  getBlogsData = async () => {
+    const {match} = this.props
+    const {params} = match
+    const {id} = params
+    console.log(id)
+    const response = await fetch(`https://apis.ccbp.in/blogs/${id}`)
+    const data = await response.json()
+    console.log(data)
+    const updatedData = {
+      imageUrl: data.image_url,
+      title: data.title,
+      author: data.author,
+      avatarUrl: data.avatar_url,
+      content: data.content,
+      topic: data.topic,
+      id: data.id,
+    }
+    this.setState({blogData: updatedData})
+  }
+
   renderBlogItemDetails = () => {
+    const {blogData} = this.state
     const {title, imageUrl, content, avatarUrl, author} = blogData
     return (
       <div className="blog-info">
